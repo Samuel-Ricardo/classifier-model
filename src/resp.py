@@ -102,4 +102,96 @@ def train_step(data, label):
     (loss, _), grads = grad_fn(data, label)
     optimizer(grads)
     return loss
+
+def train(model, dataset):
+    size = dataset.get_dataset_size()
+    model.set_train()
+
+    for batch, (data, label) in enumerate(dataset.create_tuple_iterator()):
+        loss = train_step(data, label)
+
+        if batch % 100 == 0:
+            loss, current = loss.asnumpy(), batch
+            print(f"loss: {loss:>7f} [{current:>3d}/{size:>3d}]")
 #%%
+
+
+#%%
+epochs = 3 
+
+for t in range(epochs): 
+    print(f"Epoch {t+1}\n-------------------------------")
+    train(model, train_dataset)
+
+print("Done!\n")
+#%%
+
+
+#%%
+def test(model, dataset):
+    model.set_train(False)
+
+    total   = 0 
+    correct = 0 
+
+    for data, label in dataset.create_tuple_iterator():
+        
+        logits = model(data)
+
+        predicted = logits.argmax(axis=1)
+        
+        predicted = predicted.asnumpy()
+        label     = label.asnumpy()
+
+        correct += (predicted == label).sum()
+        total   += label.shape[0]
+
+    accuracy = correct / total
+    return accuracy
+#%%
+
+
+#%%
+print("Avaliando o modelo no conjunto de teste...")
+accuracy = test(model, test_dataset)
+
+print(f"\nResultado da avaliação: \n")
+print(f"Acurácia = {accuracy*100:.2f}%")
+print(f"  ({int(accuracy * 10000)}/10000 imagens classificadas corretamente)\n")
+#%%
+
+
+#%%
+print("=" * 50)
+print("DESAFIO: Amostras do conjunto de teste")
+print("=" * 50)
+#%%
+
+#%%
+model.set_train(False)
+
+for data, label in test_dataset.create_tuple_iterator():
+
+    logits    = model(data)
+    predicted = logits.argmax(axis=1)
+
+    predicted = predicted.asnumpy()
+    label     = label.asnumpy()
+
+    print(f"\n{'Amostra':<10} {'Real':<10} {'Previsto':<12} {'Resultado'}")
+    print("-" * 45)
+
+    for i in range(10):
+        real = label[i]
+        pred = predicted[i]
+        check = "CORRETO" if real == pred else "ERRADO"
+        print(f"{i + 1:<10} {real:<10} {pred:<12} {check}")
+    break
+#%%
+
+#%%
+print("\n" + "=" * 50)
+print("Avaliação concluída!")
+print("=" * 50)
+#%%
+
