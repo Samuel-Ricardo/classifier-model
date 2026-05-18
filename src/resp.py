@@ -1,6 +1,6 @@
 #%%
 import mindspore
-import numpý as np
+import numpy as np
 from mindspore import nn
 from mindspore.dataset import vision, transforms
 from mindspore.dataset import MnistDataset
@@ -26,12 +26,7 @@ test_dataset = MnistDataset('MNIST_Data/test')
 #%%
 image_transforms = [
     vision.Rescale(1.0 / 255.0, 0.0),
-    vision.HMC2CHM()
-]
-
-image_transform = [
-    vision.Rescale(1.0 /  255.0, 0.0),
-    vision.HMC2CHM()
+    vision.HWC2CHW()
 ]
 
 label_transform = transforms.TypeCast(mindspore.int32)
@@ -59,17 +54,17 @@ class Network(nn.Cell):
 
         self.dense_relu_sequential = nn.SequentialCell(
             nn.Dense(28 * 28, 512),
-            nn.ReLu(),
+            nn.ReLU(),
             nn.Dense(512, 512),
-            nn.ReLu(),
+            nn.ReLU(),
             nn.Dropout(keep_prob=0.5),
             nn.Dense(512, 10)
         )
 
-        def construct(self, x):
-            x = x.reshape(x.shape[0], -1)
-            logits = self.dense_relu_sequential(x)
-            return logits
+    def construct(self, x):
+        x = x.reshape(x.shape[0], -1)
+        logits = self.dense_relu_sequential(x)
+        return logits
 #%%
 
 
@@ -79,7 +74,7 @@ model = Network()
 
 loss_fn = nn.SoftmaxCrossEntropyWithLogits(sparse=True, reduction='mean')
 
-optimizer - nn.SGD(
+optimizer = nn.SGD(
     model.trainable_params(),
     learning_rate=1e-2,
     momentum=0.9,
@@ -89,7 +84,7 @@ optimizer - nn.SGD(
 
 
 #%%
-def foward_fn(data, lael):
+def forward_fn(data, label):
     logits = model(data)
     loss = loss_fn(logits, label)
     return loss, logits 
@@ -103,6 +98,8 @@ grad_fn = mindspore.value_and_grad(
 #%%
 
 #%%
-def train_setp(data, label):
-    (loss, _), grads = grad_fn(data, label)mmiku
+def train_step(data, label):
+    (loss, _), grads = grad_fn(data, label)
+    optimizer(grads)
+    return loss
 #%%
