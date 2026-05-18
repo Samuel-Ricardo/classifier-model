@@ -1,0 +1,8 @@
+# Requer Python 3.11 (use: uv venv .venv311 --python 3.11)
+# Instalar: uv pip install -r requirements.txt -i https://pypi.org/simple
+--index-url https://pypi.org/simple
+mindspore==2.8.0
+
+ipykernel
+numpy
+download
