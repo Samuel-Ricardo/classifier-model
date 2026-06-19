@@ -1,4 +1,4 @@
-#%% 
+#%%
 
 import mindspore as ms 
 from mindspore import Tensor 

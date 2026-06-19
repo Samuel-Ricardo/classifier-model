@@ -1,14 +1,13 @@
-#%% 
+#%%
 
 import mindspore as ms 
-#from mindspore import Tensor 
+
 from mindspore import nn
 from mindspore.train import Model
 from mindspore.train.callback import LossMonitor
 
 import mindspore.dataset as ds 
 from mindspore.nn import Accuracy
-#import numpy as np
 
 
 #%%
@@ -39,13 +38,10 @@ print("GeLU:", gelu(x))
 
 #%%
 
-# QUESTAO 4:
-#
-# A função `Tanh` mantém os valores negativos, apenas os comprime para o intervalo entre $-1$ e $1$. 
-# Já a função `ReLU` zera todos os valores negativos e mantém apenas os positivos.
+print("Resposta: Tanh mantém valores negativos em [-1, 1]; ReLU zera os negativos.")
 
-# Pelos resultados, `Tanh(-2)` e `Tanh(-1)` continuam negativos, enquanto `ReLU(-2)` e `ReLU(-1)` viram `0`. 
-# Portanto: `Tanh` preserva negativos; `ReLU` os zera.
+
+#%%
 
 
 #%%
